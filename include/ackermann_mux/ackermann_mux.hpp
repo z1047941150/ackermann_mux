@@ -30,14 +30,15 @@
  * @author Enrique Fernandez
  * @author Siegfried Gevatter
  * @author Jeremie Deray
+ * @author Hongrui Zheng
  */
 
-#ifndef TWIST_MUX__TWIST_MUX_HPP_
-#define TWIST_MUX__TWIST_MUX_HPP_
+#ifndef ACKERMANN_MUX__ACKERMANN_MUX_HPP_
+#define ACKERMANN_MUX__ACKERMANN_MUX_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/bool.hpp>
-#include <geometry_msgs/msg/twist.hpp>
+#include <ackermann_msgs/msg/ackermann_drive_stamped.hpp>
 
 #include <list>
 #include <memory>
@@ -45,19 +46,19 @@
 
 using std::chrono_literals::operator""s;
 
-namespace twist_mux
+namespace ackermann_mux
 {
 // Forwarding declarations:
-class TwistMuxDiagnostics;
-struct TwistMuxDiagnosticsStatus;
+class AckermannMuxDiagnostics;
+struct AckermannMuxDiagnosticsStatus;
 class VelocityTopicHandle;
 class LockTopicHandle;
 
 /**
- * @brief The TwistMux class implements a top-level twist multiplexer module
+ * @brief The AckermannMux class implements a top-level ackermann multiplexer module
  * that priorize different velocity command topic inputs according to locks.
  */
-class TwistMux : public rclcpp::Node
+class AckermannMux : public rclcpp::Node
 {
 public:
   template<typename T>
@@ -66,20 +67,20 @@ public:
   using velocity_topic_container = handle_container<VelocityTopicHandle>;
   using lock_topic_container = handle_container<LockTopicHandle>;
 
-  explicit TwistMux();
-  ~TwistMux() = default;
+  explicit AckermannMux();
+  ~AckermannMux() = default;
 
   void init();
 
   bool hasPriority(const VelocityTopicHandle & twist);
 
-  void publishTwist(const geometry_msgs::msg::Twist::ConstSharedPtr & msg);
+  void publishAckermann(const ackermann_msgs::msg::AckermannDriveStamped::ConstSharedPtr & msg);
 
   void updateDiagnostics();
 
 protected:
-  typedef TwistMuxDiagnostics diagnostics_type;
-  typedef TwistMuxDiagnosticsStatus status_type;
+  typedef AckermannMuxDiagnostics diagnostics_type;
+  typedef AckermannMuxDiagnosticsStatus status_type;
 
   rclcpp::TimerBase::SharedPtr diagnostics_timer_;
 
@@ -94,9 +95,9 @@ protected:
   std::shared_ptr<velocity_topic_container> velocity_hs_;
   std::shared_ptr<lock_topic_container> lock_hs_;
 
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_pub_;
+  rclcpp::Publisher<ackermann_msgs::msg::AckermannDriveStamped>::SharedPtr cmd_pub_;
 
-  geometry_msgs::msg::Twist last_cmd_;
+  ackermann_msgs::msg::AckermannDriveStamped last_cmd_;
 
   template<typename T>
   void getTopicHandles(const std::string & param_name, handle_container<T> & topic_hs);
@@ -107,6 +108,6 @@ protected:
   std::shared_ptr<status_type> status_;
 };
 
-}  // namespace twist_mux
+}  // namespace ackermann_mux
 
-#endif  // TWIST_MUX__TWIST_MUX_HPP_
+#endif  // ACKERMANN_MUX__ACKERMANN_MUX_HPP_

@@ -27,53 +27,45 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 /*
- * @author Enrique Fernandez
+ * @author Paul Mathieu
  * @author Jeremie Deray
- * @author Brighten Lee
+ * @author Hongrui Zheng
  */
 
-#ifndef TWIST_MUX__TWIST_MUX_DIAGNOSTICS_HPP_
-#define TWIST_MUX__TWIST_MUX_DIAGNOSTICS_HPP_
+#ifndef ACKERMANN_MUX__PARAMS_HELPERS_HPP_
+#define ACKERMANN_MUX__PARAMS_HELPERS_HPP_
 
-#include <twist_mux/twist_mux_diagnostics_status.hpp>
-
-#include <diagnostic_updater/diagnostic_updater.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include <memory>
+#include <sstream>
+#include <string>
 
-namespace twist_mux
+namespace ackermann_mux
 {
-class TwistMuxDiagnostics
+class ParamsHelperException : public std::runtime_error
 {
 public:
-  typedef TwistMuxDiagnosticsStatus status_type;
-
-  static constexpr double MAIN_LOOP_TIME_MIN = 0.2;   // [s]
-  static constexpr double READING_AGE_MIN = 3.0;     // [s]
-
-  explicit TwistMuxDiagnostics(TwistMux * mux);
-  virtual ~TwistMuxDiagnostics() = default;
-
-  void diagnostics(diagnostic_updater::DiagnosticStatusWrapper & stat);
-
-  void update();
-
-  void updateStatus(const status_type::ConstPtr & status);
-
-private:
-  /**
-   * @brief Levels
-   */
-  enum
+  explicit ParamsHelperException(const std::string & what)
+  : std::runtime_error(what)
   {
-    OK = diagnostic_msgs::msg::DiagnosticStatus::OK,
-    WARN = diagnostic_msgs::msg::DiagnosticStatus::WARN,
-    ERROR = diagnostic_msgs::msg::DiagnosticStatus::ERROR
-  };
-
-  std::shared_ptr<diagnostic_updater::Updater> diagnostic_;
-  std::shared_ptr<status_type> status_;
+  }
 };
-}  // namespace twist_mux
 
-#endif  // TWIST_MUX__TWIST_MUX_DIAGNOSTICS_HPP_
+template<class T>
+void fetch_param(std::shared_ptr<rclcpp::Node> nh, const std::string & param_name, T & output)
+{
+  rclcpp::Parameter param;
+  if (!nh->get_parameter(param_name, param)) {
+    std::ostringstream err_msg;
+    err_msg << "could not load parameter '" << param_name << "'. (namespace: " <<
+      nh->get_namespace() << ")";
+    throw ParamsHelperException(err_msg.str());
+  }
+
+  output = param.get_value<T>();
+}
+
+}  // namespace ackermann_mux
+
+#endif  // ACKERMANN_MUX__PARAMS_HELPERS_HPP_

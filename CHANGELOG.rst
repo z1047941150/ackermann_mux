@@ -1,6 +1,11 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package twist_mux
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package ackermann mux
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+0.0.1 (2021-09-21)
+------------------
+* moving from twist mux to ackermann mux
+* Contributors: Hongrui Zheng
 
 4.0.0 (2021-06-16)
 ------------------

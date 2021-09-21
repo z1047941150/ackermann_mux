@@ -28,50 +28,32 @@
 
 /*
  * @author Enrique Fernandez
- * @author Jeremie Deray
- * @author Brighten Lee
+ * @author Siegfried Gevatter
+ * @author Hongrui Zheng
  */
 
-#ifndef TWIST_MUX__TWIST_MUX_DIAGNOSTICS_STATUS_HPP_
-#define TWIST_MUX__TWIST_MUX_DIAGNOSTICS_STATUS_HPP_
+#ifndef ACKERMANN_MUX__UTILS_HPP_
+#define ACKERMANN_MUX__UTILS_HPP_
 
-#include <twist_mux/twist_mux.hpp>
-#include <twist_mux/topic_handle.hpp>
+// This could be taken from #include <boost/algorithm/clamp.hpp>
+// but it seems that all versions of Boost have it.
 
-#include <rclcpp/rclcpp.hpp>
-
-#include <memory>
-
-namespace twist_mux
+/**
+ * @brief Clamp a value to the range [min, max]
+ * @param x Value
+ * @param min Min value of the range [min, max]
+ * @param max Max value of the range [min, max]
+ * @return Value clamped to the range [min, max]
+ */
+template<typename T>
+static T clamp(T x, T min, T max)
 {
-struct TwistMuxDiagnosticsStatus
-{
-  typedef std::shared_ptr<TwistMuxDiagnosticsStatus> Ptr;
-  typedef std::shared_ptr<const TwistMuxDiagnosticsStatus> ConstPtr;
-
-  double reading_age;
-  rclcpp::Time last_loop_update;
-  double main_loop_time;
-
-  LockTopicHandle::priority_type priority;
-
-  std::shared_ptr<TwistMux::velocity_topic_container> velocity_hs;
-  std::shared_ptr<TwistMux::lock_topic_container> lock_hs;
-
-  TwistMuxDiagnosticsStatus()
-  : reading_age(0),
-    last_loop_update(rclcpp::Clock().now()),
-    main_loop_time(0),
-    priority(0)
-  {
-    velocity_hs = std::make_shared<TwistMux::velocity_topic_container>();
-    lock_hs = std::make_shared<TwistMux::lock_topic_container>();
+  if (x < min) {
+    x = min;
+  } else if (max < x) {
+    x = max;
   }
-};
+  return x;
+}
 
-typedef TwistMuxDiagnosticsStatus::Ptr TwistMuxDiagnosticsStatusPtr;
-typedef TwistMuxDiagnosticsStatus::ConstPtr TwistMuxDiagnosticsStatusConstPtr;
-
-}  // namespace twist_mux
-
-#endif  // TWIST_MUX__TWIST_MUX_DIAGNOSTICS_STATUS_HPP_
+#endif  // ACKERMANN_MUX__UTILS_HPP_
