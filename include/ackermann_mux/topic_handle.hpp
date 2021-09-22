@@ -160,7 +160,7 @@ private:
   typedef TopicHandle_<ackermann_msgs::msg::AckermannDriveStamped> base_type;
 
   // https://index.ros.org/doc/ros2/About-Quality-of-Service-Settings
-  // rmw_qos_profile_t twist_qos_profile = rmw_qos_profile_sensor_data;
+  // rmw_qos_profile_t ackermann_qos_profile = rmw_qos_profile_sensor_data;
 
 public:
   typedef typename base_type::priority_type priority_type;
@@ -175,7 +175,7 @@ public:
       std::bind(&VelocityTopicHandle::callback, this, std::placeholders::_1));
 
     // subscriber_ = nh_.create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(
-    //    topic_, twist_qos_profile,
+    //    topic_, ackermann_qos_profile,
     //  std::bind(&VelocityTopicHandle::callback, this, std::placeholders::_1));
   }
 
@@ -195,7 +195,7 @@ public:
     // and since we have several topics we must look for the highest one in
     // all the topic list; so far there's no O(1) solution.
     if (mux_->hasPriority(*this)) {
-      mux_->publishTwist(msg);
+      mux_->publishAckermann(msg);
     }
   }
 };

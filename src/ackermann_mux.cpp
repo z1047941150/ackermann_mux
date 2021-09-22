@@ -47,8 +47,8 @@
 /**
  * @brief hasIncreasedAbsVelocity Check if the absolute velocity has increased
  * in any of the components: linear (abs(x)) or angular (abs(yaw))
- * @param old_twist Old velocity
- * @param new_twist New velocity
+ * @param old_drive Old velocity
+ * @param new_drive New velocity
  * @return true is any of the absolute velocity components has increased
  */
 bool hasIncreasedAbsVelocity(
@@ -71,13 +71,13 @@ namespace ackermann_mux
 constexpr std::chrono::duration<int64_t> AckermannMux::DIAGNOSTICS_PERIOD;
 
 AckermannMux::AckermannMux()
-: Node("twist_mux", "",
+: Node("ackermann_mux", "",
     rclcpp::NodeOptions().allow_undeclared_parameters(
       true).automatically_declare_parameters_from_overrides(true))
 {
 }
 
-void TwistMux::init()
+void AckermannMux::init()
 {
   /// Get topics and locks:
   velocity_hs_ = std::make_shared<velocity_topic_container>();
@@ -87,8 +87,8 @@ void TwistMux::init()
 
   /// Publisher for output topic:
   cmd_pub_ =
-    this->create_publisher<geometry_msgs::msg::Twist>(
-    "cmd_vel_out",
+    this->create_publisher<ackermann_msgs::msg::AckermannDriveStamped>(
+    "ackermann_drive_out",
     rclcpp::QoS(rclcpp::KeepLast(1)));
 
   /// Diagnostics:
@@ -103,19 +103,19 @@ void TwistMux::init()
     });
 }
 
-void TwistMux::updateDiagnostics()
+void AckermannMux::updateDiagnostics()
 {
   status_->priority = getLockPriority();
   diagnostics_->updateStatus(status_);
 }
 
-void TwistMux::publishTwist(const geometry_msgs::msg::Twist::ConstSharedPtr & msg)
+void AckermannMux::publishAckermann(const ackermann_msgs::msg::AckermannDriveStamped::ConstSharedPtr & msg)
 {
   cmd_pub_->publish(*msg);
 }
 
 template<typename T>
-void TwistMux::getTopicHandles(const std::string & param_name, std::list<T> & topic_hs)
+void AckermannMux::getTopicHandles(const std::string & param_name, std::list<T> & topic_hs)
 {
   RCLCPP_DEBUG(get_logger(), "getTopicHandles: %s", param_name.c_str());
 
@@ -147,7 +147,7 @@ void TwistMux::getTopicHandles(const std::string & param_name, std::list<T> & to
   }
 }
 
-int TwistMux::getLockPriority()
+int AckermannMux::getLockPriority()
 {
   LockTopicHandle::priority_type priority = 0;
 
@@ -167,7 +167,7 @@ int TwistMux::getLockPriority()
   return priority;
 }
 
-bool TwistMux::hasPriority(const VelocityTopicHandle & twist)
+bool AckermannMux::hasPriority(const VelocityTopicHandle & ackermann)
 {
   const auto lock_priority = getLockPriority();
 
@@ -186,7 +186,7 @@ bool TwistMux::hasPriority(const VelocityTopicHandle & twist)
     }
   }
 
-  return twist.getName() == velocity_name;
+  return ackermann.getName() == velocity_name;
 }
 
-}  // namespace twist_mux
+}  // namespace ackermann_mux
