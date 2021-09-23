@@ -47,11 +47,11 @@ def generate_launch_description():
             description='Default joystick config file'),
         DeclareLaunchArgument(
             'cmd_vel_out',
-            default_value='twist_mux/cmd_vel',
+            default_value='ackermann_mux/cmd_vel',
             description='cmd vel output topic'),
         Node(
-            package='twist_mux',
-            executable='twist_mux',
+            package='ackermann_mux',
+            executable='ackermann_mux',
             output='screen',
             remappings={('/cmd_vel_out', LaunchConfiguration('cmd_vel_out'))},
             parameters=[
@@ -59,14 +59,4 @@ def generate_launch_description():
                 LaunchConfiguration('config_topics'),
                 LaunchConfiguration('config_joy')]
         ),
-
-        Node(
-            package='twist_mux',
-            executable='twist_marker',
-            output='screen',
-            remappings={('/twist', LaunchConfiguration('cmd_vel_out'))},
-            parameters=[{
-                'frame_id': 'base_link',
-                'scale': 1.0,
-                'vertical_position': 2.0}])
             ])
