@@ -12,9 +12,12 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
+
 find_package(std_msgs REQUIRED)
 find_package(ackermann_msgs REQUIRED)
 find_package(diagnostic_updater REQUIRED)
+find_package(crsf_receiver_msg REQUIRED)
 
 include_directories(include)
 
@@ -24,6 +27,7 @@ set(
   "std_msgs"
   "ackermann_msgs"
   "diagnostic_updater"
+  # "crsf_receiver_msg"
 )
 
 add_executable(ackermann_mux
@@ -41,10 +45,10 @@ install(
 )
 
 # Pending to test ROS2 migration
-#install(
-#  PROGRAMS scripts/joystick_relay.py
-#  DESTINATION lib/${PROJECT_NAME}
-#)
+install(
+ PROGRAMS scripts/joystick_control.py
+ DESTINATION lib/${PROJECT_NAME}
+)
 
 foreach(dir launch config)
   install(DIRECTORY ${dir}/
