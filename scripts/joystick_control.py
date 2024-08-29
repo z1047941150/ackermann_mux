@@ -29,7 +29,7 @@ class JoystickControl(Node):
         self.speed_reverse = self.declare_parameter("speed_reverse", False).value
         self.speed_channel = self.declare_parameter("speed_channel", 2).value
         self.steering_channel = self.declare_parameter("steering_channel", 4).value
-        self.steering_limit = self.declare_parameter("steering_limit", 0.35).value
+        self.steering_limit = self.declare_parameter("steering_limit", 0.40).value
         self.steering_reverse = self.declare_parameter("steering_reverse", True).value
         self.channel_mid = self.declare_parameter(
             "steering_channel_mid", 984
