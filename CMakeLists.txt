@@ -46,7 +46,9 @@ install(
 
 # Pending to test ROS2 migration
 install(
- PROGRAMS scripts/joystick_control.py
+ PROGRAMS
+  scripts/joystick_control.py
+  scripts/cmd_vel_to_ackermann_drive.py
  DESTINATION lib/${PROJECT_NAME}
 )
 
